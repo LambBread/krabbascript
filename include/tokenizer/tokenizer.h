@@ -1,0 +1,29 @@
+#pragma once
+
+enum token_type {
+    // Types
+    KSCRIPT_TOKEN_TYPE_INT64,
+    KSCRIPT_TOKEN_TYPE_INT32,
+    KSCRIPT_TOKEN_TYPE_INT16,
+    KSCRIPT_TOKEN_TYPE_INT8,
+
+    KSCRIPT_TOKEN_TYPE_UINT64,
+    KSCRIPT_TOKEN_TYPE_UINT32,
+    KSCRIPT_TOKEN_TYPE_UINT16,
+    KSCRIPT_TOKEN_TYPE_UINT8,
+
+    KSCRIPT_TOKEN_TYPE_FLOAT64,
+    KSCRIPT_TOKEN_TYPE_FLOAT32,
+
+    KSCRIPT_TOKEN_TYPE_POINTER,
+    KSCRIPT_TOKEN_TYPE_STRING,
+};
+
+struct {
+    enum token_type     type;
+
+    union {
+        int             i;
+    };
+    
+} token;

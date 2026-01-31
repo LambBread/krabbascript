@@ -1,2 +1,5 @@
-krabascript
-*.
+kscript
+test.krs
+
+obj/
+.vscode/
