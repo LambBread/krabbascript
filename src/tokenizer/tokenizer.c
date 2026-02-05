@@ -27,8 +27,13 @@ token_vector_t *tokenize(char_vector_t *vector) {
     (void)buffer;
 
     size_t i = 0;
-    while (isalnum(charVectorPeek(vector, i))) {
-        
+    while (i < vector->size) {
+        // Handle symbols
+        switch(vector->data[i]) {
+
+            case '(':
+
+        }
     }
 
     return tokens;
