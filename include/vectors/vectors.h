@@ -6,6 +6,7 @@
 #include <assert.h>
 
 char_vector_t      *newCharVector();
+void               resetCharVector(char_vector_t *vector);
 
 void               charVectorPush(char_vector_t *vector, char val);
 char               charVectorPop(char_vector_t *vector);

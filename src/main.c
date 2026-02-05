@@ -32,10 +32,8 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[1], "t") == 0) {
         char_vector_t *source_code = fileToCharVector("test.krs");
 
-        for (size_t i = 0; i < source_code->size; i++) {
-            printf("%c", charVectorPeek(source_code, i));
-        }
-        printf("\n");
+        token_vector_t *tokens = tokenize(source_code, "test.krs");
+        (void)tokens;
 
         return 0;
     }

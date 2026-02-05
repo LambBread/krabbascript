@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #define KSCRIPT_VERSION_MAJOR 1
-#define KSCRIPT_VERSION_MINOR 1
+#define KSCRIPT_VERSION_MINOR 2
 #define KSCRIPT_VERSION_PATCH 0
 
 #define KSCRIPT_VERSION_IDENT "prototype"
@@ -22,3 +22,5 @@ void usageInit();
 void usageBuild();
 
 int isFile(const char* name);
+
+extern int errors_generated;

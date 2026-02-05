@@ -1,5 +1,5 @@
 CC      := gcc
-CFLAGS  := -Wall -Wextra -Werror -O2 -I include '-DKSCRIPT_VENDOR="KrabbaTek"'
+CFLAGS  := -Wall -Wextra -Werror -g -O2 -I include '-DKSCRIPT_VENDOR="KrabbaTek"'
 SRC_DIR := src
 OBJ_DIR := obj
 TARGET  := kscript

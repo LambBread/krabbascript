@@ -1,5 +1,7 @@
 #include <common/common.h>
 
+int errors_generated = 0;
+
 void printUsage() {
     printf("Usage: kscript [options]\n\n");
     printf("Commands: \n");

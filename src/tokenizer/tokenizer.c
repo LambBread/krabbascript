@@ -19,20 +19,108 @@ char_vector_t *fileToCharVector(const char *path) {
     return vector;
 }
 
-token_vector_t *tokenize(char_vector_t *vector) {
+token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
 
     char_vector_t  *buffer = newCharVector();
     token_vector_t *tokens = newTokenVector();
 
-    (void)buffer;
+    int line, col = { 1 };
+    for (size_t i = 0; i < vector->size; i++) {
+        char current = vector->data[i];
 
-    size_t i = 0;
-    while (i < vector->size) {
-        // Handle symbols
-        switch(vector->data[i]) {
+        if (isdigit(current)) {
+            while (i < vector->size && isdigit(current)) {
+                charVectorPush(buffer, current);
 
-            case '(':
+                i++;
+                current = vector->data[i];
+            }
 
+            charVectorPush(buffer, '\0');
+            i--;
+
+            int value = atoi(buffer->data);
+
+            if (value == -1) {
+                errors_generated++;
+
+                printf("\e[1;31mERROR in %s:%d\e[0m: Number is too large!\n", debug_path, line);
+                printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
+                    errors_generated == 1 ? "error" : "errors");
+
+                exit(1);
+            }
+            resetCharVector(buffer);
+        }
+        else if (isalnum(current)) {
+            while (i < vector->size && isalnum(current)) {
+                charVectorPush(buffer, current);
+
+                i++;
+                current = vector->data[i];
+            }
+            charVectorPush(buffer, '\0');
+            i--;
+
+            if (strcmp(buffer->data, "function") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FUNCTION });
+            }
+            else if (strcmp(buffer->data, "var") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_VAR });
+            }
+            else if (strcmp(buffer->data, "val") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_VAL });
+            }
+            else if (strcmp(buffer->data, "import") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_IMPORT });
+            }
+            else if (strcmp(buffer->data, "from") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FROM });
+            }
+            else if (strcmp(buffer->data, "module") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MODULE });
+            }
+            else if (strcmp(buffer->data, "while") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_WHILE });
+            }
+            else if (strcmp(buffer->data, "true") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .b = true });
+            }
+            else if (strcmp(buffer->data, "false") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FALSE, .b = false });
+            }
+            else if (strcmp(buffer->data, "for") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FOR });
+            }
+            else {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .s = strdup(buffer->data)});
+                resetCharVector(buffer);
+            }
+        }
+        else if (isspace(current)) {
+            if (current == '\n') {
+                line++;
+            }
+            continue;
+        }
+        else {
+            errors_generated++;
+
+            printf("\e[1;31mERROR in %s:%d\e[0m: Unknown token\n", debug_path, line);
+            printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
+                errors_generated == 1 ? "error" : "errors");
+
+            exit(1);
         }
     }
 

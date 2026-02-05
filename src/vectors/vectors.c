@@ -11,6 +11,10 @@ char_vector_t *newCharVector() {
      return vec;
 }
 
+void resetCharVector(char_vector_t *vector) {
+     vector->size = 0;
+}
+
 void charVectorPush(char_vector_t *vector, char val) {
      if (vector->data == NULL) {
           vector->data = (char *)malloc(sizeof(char));

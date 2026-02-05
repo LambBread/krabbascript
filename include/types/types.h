@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef enum {
     // Types
@@ -60,6 +61,7 @@ typedef struct {
         double          d;
 
         char            *s;
+        bool            b;
     };
 } token_t;
 
