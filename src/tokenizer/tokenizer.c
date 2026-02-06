@@ -40,14 +40,13 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
 
             charVectorPush(buffer, '\0');
             i--;
-            col--;
 
             int value = atoi(buffer->data);
 
             if (value == -1) {
                 errors_generated++;
 
-                printf("\e[1;31mERROR in %s:%d\e[0m: Number is too large!\n", debug_path, line);
+                printf("\e[1;31mERROR in %s:%d:%d:\e[0m: Number is too large!\n", debug_path, line, col);
                 printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
                     errors_generated == 1 ? "error" : "errors");
 
@@ -60,6 +59,7 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 charVectorPush(buffer, current);
 
                 i++;
+                col++;
                 current = vector->data[i];
             }
             charVectorPush(buffer, '\0');
@@ -121,6 +121,34 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 resetCharVector(buffer);
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I8 });
             }
+            else if (strcmp(buffer->data, "u64") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_U64 });
+            }
+            else if (strcmp(buffer->data, "u32") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_U32 });
+            }
+            else if (strcmp(buffer->data, "u16") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_U16 });
+            }
+            else if (strcmp(buffer->data, "u8") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_U8 });
+            }
+            else if (strcmp(buffer->data, "f64") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_F64 });
+            }
+            else if (strcmp(buffer->data, "f32") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_F32 });
+            }
+            else if (strcmp(buffer->data, "i8") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I8 });
+            }
             else {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .s = strdup(buffer->data)});
                 resetCharVector(buffer);
@@ -136,7 +164,7 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
         else {
             errors_generated++;
 
-            printf("%s:%d: \e[1;31mSYNTAX ERROR\e[0m: Unknown token\n", debug_path, line);
+            printf("%s:%d:%d: \e[1;31mSYNTAX ERROR\e[0m: Unknown token\n", debug_path, line, col);
             printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
                 errors_generated == 1 ? "error" : "errors");
 
