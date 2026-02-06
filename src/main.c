@@ -29,11 +29,28 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    if (strcmp(argv[1], "t") == 0) {
-        char_vector_t *source_code = fileToCharVector("test.krs");
+    if (strcmp(argv[1], "build") == 0) {
+        if (argc < 3) {
+            printf("\e[1;31mERROR\e[0m: No input file|directory\n");
+            usageBuild();
 
-        token_vector_t *tokens = tokenize(source_code, "test.krs");
-        (void)tokens;
+            return 64;
+        }
+    
+        int result = isFile(argv[2]);
+        if (result == 1) {
+            char_vector_t *source = fileToCharVector(argv[2]);
+
+            token_vector_t *tokens = tokenize(source, argv[2]);
+            (void)tokens;
+        }
+
+        else if (result == 0) {
+            printf("\e[1;31mERROR\e[0m: Building a directory is not implemented yet\n");
+        }
+        else {
+            printf("\e[1;31mERROR\e[0m: No such file or directory \"%s\"\n", argv[2]);
+        }
 
         return 0;
     }
@@ -41,5 +58,5 @@ int main(int argc, char *argv[]) {
     printf("\e[1;31mERROR\e[0m: Unknown command \"%s\"\n", argv[1]);
     printUsage();
 
-    return 1;
+    return 64;
 }

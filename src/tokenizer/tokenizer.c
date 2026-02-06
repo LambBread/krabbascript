@@ -24,7 +24,8 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
     char_vector_t  *buffer = newCharVector();
     token_vector_t *tokens = newTokenVector();
 
-    int line, col = { 1 };
+    int line = 1;
+    int col = 1;
     for (size_t i = 0; i < vector->size; i++) {
         char current = vector->data[i];
 
@@ -33,11 +34,13 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 charVectorPush(buffer, current);
 
                 i++;
+                col++;
                 current = vector->data[i];
             }
 
             charVectorPush(buffer, '\0');
             i--;
+            col--;
 
             int value = atoi(buffer->data);
 
@@ -102,6 +105,22 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 resetCharVector(buffer);
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FOR });
             }
+            else if (strcmp(buffer->data, "i64") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I64 });
+            }
+            else if (strcmp(buffer->data, "i32") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I32 });
+            }
+            else if (strcmp(buffer->data, "i16") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I16 });
+            }
+            else if (strcmp(buffer->data, "i8") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I8 });
+            }
             else {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .s = strdup(buffer->data)});
                 resetCharVector(buffer);
@@ -110,13 +129,14 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
         else if (isspace(current)) {
             if (current == '\n') {
                 line++;
+                col = 1;
             }
             continue;
         }
         else {
             errors_generated++;
 
-            printf("\e[1;31mERROR in %s:%d\e[0m: Unknown token\n", debug_path, line);
+            printf("%s:%d: \e[1;31mSYNTAX ERROR\e[0m: Unknown token\n", debug_path, line);
             printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
                 errors_generated == 1 ? "error" : "errors");
 
