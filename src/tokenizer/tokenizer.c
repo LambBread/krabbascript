@@ -46,13 +46,50 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             if (value == -1) {
                 errors_generated++;
 
-                printf("\e[1;31mERROR in %s:%d:%d:\e[0m: Number is too large!\n", debug_path, line, col);
-                printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
-                    errors_generated == 1 ? "error" : "errors");
-
-                exit(1);
+                printf("%s:%d:%d: \e[1;31mOVERFLOW ERROR\e[0m: Number is too large\n", debug_path, line, col);
             }
             resetCharVector(buffer);
+
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_INT_LITERAL, .i = value });
+        }
+        else if (current == '(') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_OPEN_PAREN });
+        }
+        else if (current == ')') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_CLOSED_PAREN });
+        }
+        else if (current == ';') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_SEMICOLON });
+        }
+        else if (current == '=') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_EQUALS });
+        }
+        else if (current == '!') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_EXMARK });
+        }
+        else if (current == '?') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_QMARK });
+        }
+        else if (current == '.') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_DOT });
+        }
+        else if (current == ',') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_COMMA });
+        }
+        else if (current == '{') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_CBRACKET_OPEN });
+        }
+        else if (current == '}') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_CBRACKET_CLOSED });
+        }
+        else if (current == '<') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LESS_THAN });
+        }
+        else if (current == '>') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MORE_THAN });
+        }
+        else if (current == '"') {
+            
         }
         else if (isalnum(current)) {
             while (i < vector->size && isalnum(current)) {
@@ -145,9 +182,17 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 resetCharVector(buffer);
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_F32 });
             }
-            else if (strcmp(buffer->data, "i8") == 0) {
+            else if (strcmp(buffer->data, "ptr") == 0) {
                 resetCharVector(buffer);
-                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_I8 });
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_PTR });
+            }
+            else if (strcmp(buffer->data, "str") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_STR });
+            }
+            else if (strcmp(buffer->data, "bool") == 0) {
+                resetCharVector(buffer);
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BOOL });
             }
             else {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .s = strdup(buffer->data)});
@@ -164,11 +209,7 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
         else {
             errors_generated++;
 
-            printf("%s:%d:%d: \e[1;31mSYNTAX ERROR\e[0m: Unknown token\n", debug_path, line, col);
-            printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
-                errors_generated == 1 ? "error" : "errors");
-
-            exit(1);
+            printf("%s:%d:%d: \e[1;31mSYNTAX ERROR\e[0m: Unknown token '%c'\n", debug_path, line, col, current);
         }
     }
 

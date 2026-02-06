@@ -43,6 +43,13 @@ int main(int argc, char *argv[]) {
 
             token_vector_t *tokens = tokenize(source, argv[2]);
             (void)tokens;
+
+            if (errors_generated > 0) {
+                printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
+                    errors_generated == 1 ? "error" : "errors");
+
+                exit(1);
+            }
         }
 
         else if (result == 0) {

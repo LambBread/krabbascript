@@ -1,7 +1,5 @@
 from <krabba.krs> import krabba;
 
-function main() -> i32 {
+function main() {
     krabba.pinch();
-
-    return 0;
 }
