@@ -1,5 +1,14 @@
 from <krabba.krs> import krabba;
+from <stdlib.krs> import std.print as print;
 
-function main() {
-    krabba.pinch();
+bool pinched = false;
+function main() -> i32 {
+    if (!piched) {
+        krabba.pinch();
+    }
+    else {
+        print("Krabba!");
+    }
+
+    return 0;
 }

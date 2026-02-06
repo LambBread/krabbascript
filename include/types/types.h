@@ -26,7 +26,7 @@ typedef enum {
     KSCRIPT_TOKEN_TYPE_LITERAL,
     KSCRIPT_TOKEN_TYPE_INT_LITERAL,
     KSCRIPT_TOKEN_TYPE_STR_LITERAL,
-    KSCRIPT_TOKEN_TYPE_EOF,
+    KSCRIPT_TOKEN_TYPE_BOOL_LITERAL,
 
     // Keywords
     KSCRIPT_TOKEN_TYPE_FUNCTION,
@@ -58,6 +58,9 @@ typedef enum {
 
     KSCRIPT_TOKEN_TYPE_LESS_THAN,
     KSCRIPT_TOKEN_TYPE_MORE_THAN,
+    KSCRIPT_TOKEN_TYPE_STAR,
+    KSCRIPT_TOKEN_TYPE_MINUS,
+
 
 } token_type;
 
@@ -89,3 +92,24 @@ typedef struct {
      size_t   capacity;
 
 } token_vector_t;
+
+typedef enum {
+    KSCRIPT_AST_NODE_TYPE_DIV
+} ast_node_type;
+
+typedef struct ast_node_t {
+    ast_node_type           type;
+
+    struct ast_node_t       **children;
+    size_t                  children_nodes_count;
+    size_t                  children_nodes_capacity;
+
+    struct ast_node_t       **brothers;
+    size_t                  brothers_nodes_count;
+    size_t                  brothers_nodes_capacity;
+
+    union {
+        int                 i;
+        char                *s;
+    };
+} ast_node_t;

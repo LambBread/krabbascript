@@ -19,6 +19,70 @@ char_vector_t *fileToCharVector(const char *path) {
     return vector;
 }
 
+void deTokenize(token_vector_t *vector) {
+    for (size_t i = 0; i < vector->size; i++) {
+        deTokenizeToken(vector->data[i]);
+    }
+}
+
+void deTokenizeToken(token_t token) {
+    switch (token.type) {
+        case KSCRIPT_TOKEN_TYPE_I64:     printf("i64 "); break;
+        case KSCRIPT_TOKEN_TYPE_I32:     printf("i32 "); break;
+        case KSCRIPT_TOKEN_TYPE_I16:     printf("i16 "); break;
+        case KSCRIPT_TOKEN_TYPE_I8:      printf("i8 "); break;
+        case KSCRIPT_TOKEN_TYPE_U64:     printf("u64 "); break;
+        case KSCRIPT_TOKEN_TYPE_U32:     printf("u32 "); break;
+        case KSCRIPT_TOKEN_TYPE_U16:     printf("u16 "); break;
+        case KSCRIPT_TOKEN_TYPE_U8:      printf("u8 "); break;
+        case KSCRIPT_TOKEN_TYPE_F64:     printf("f64 "); break;
+        case KSCRIPT_TOKEN_TYPE_F32:     printf("f32 "); break;
+        case KSCRIPT_TOKEN_TYPE_PTR:     printf("ptr "); break;
+        case KSCRIPT_TOKEN_TYPE_STR:     printf("str "); break;
+        case KSCRIPT_TOKEN_TYPE_BOOL:    printf("bool "); break;
+
+        case KSCRIPT_TOKEN_TYPE_LITERAL: 
+            printf("Literal: %s ", token.s); break;
+        case KSCRIPT_TOKEN_TYPE_INT_LITERAL: 
+            printf("Int literal: %d ", token.i); break;
+        case KSCRIPT_TOKEN_TYPE_STR_LITERAL: 
+            printf("String literal: \"%s\" ", token.s); break;
+        case KSCRIPT_TOKEN_TYPE_BOOL_LITERAL:
+            printf("Bool literal: %s", token.b == true ? "true" : "false"); break;
+
+        case KSCRIPT_TOKEN_TYPE_FUNCTION: printf("function "); break;
+        case KSCRIPT_TOKEN_TYPE_VAR:      printf("var "); break;
+        case KSCRIPT_TOKEN_TYPE_VAL:      printf("val "); break;
+        case KSCRIPT_TOKEN_TYPE_IMPORT:   printf("import "); break;
+        case KSCRIPT_TOKEN_TYPE_FROM:     printf("from "); break;
+        case KSCRIPT_TOKEN_TYPE_MODULE:   printf("module "); break;
+        case KSCRIPT_TOKEN_TYPE_WHILE:    printf("while "); break;
+        case KSCRIPT_TOKEN_TYPE_TRUE:     printf("true "); break;
+        case KSCRIPT_TOKEN_TYPE_FALSE:    printf("false "); break;
+        case KSCRIPT_TOKEN_TYPE_FOR:      printf("for "); break;
+
+        case KSCRIPT_TOKEN_TYPE_OPEN_PAREN:    printf("( "); break;
+        case KSCRIPT_TOKEN_TYPE_CLOSED_PAREN:  printf(") "); break;
+        case KSCRIPT_TOKEN_TYPE_SEMICOLON:     printf("; "); break;
+        case KSCRIPT_TOKEN_TYPE_EQUALS:        printf("= "); break;
+        case KSCRIPT_TOKEN_TYPE_EXMARK:        printf("! "); break;
+        case KSCRIPT_TOKEN_TYPE_QMARK:         printf("? "); break;
+        case KSCRIPT_TOKEN_TYPE_DOT:           printf(". "); break;
+        case KSCRIPT_TOKEN_TYPE_COMMA:         printf(", "); break;
+        case KSCRIPT_TOKEN_TYPE_CBRACKET_OPEN: printf("{ "); break;
+        case KSCRIPT_TOKEN_TYPE_CBRACKET_CLOSED: printf("} "); break;
+        case KSCRIPT_TOKEN_TYPE_LESS_THAN:     printf("< "); break;
+        case KSCRIPT_TOKEN_TYPE_MORE_THAN:     printf("> "); break;
+        case KSCRIPT_TOKEN_TYPE_STAR:          printf("* "); break;
+        case KSCRIPT_TOKEN_TYPE_MINUS:         printf("- "); break;
+
+        default:
+            printf("Unknown token: %d", token.type);
+            break;
+    }
+    printf("\n");
+}
+
 token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
 
     char_vector_t  *buffer = newCharVector();
@@ -89,7 +153,25 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MORE_THAN });
         }
         else if (current == '"') {
-            
+            i++;
+            current = vector->data[i];
+
+            while (i < vector->size && current != '"') {
+                charVectorPush(buffer, current);
+
+                i++;
+                col++;
+                current = vector->data[i];
+            }
+
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_STR_LITERAL, .s = strdup(buffer->data) });
+            resetCharVector(buffer);
+        }
+        else if (current == '*') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_STAR });
+        }
+        else if (current == '-') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MINUS });
         }
         else if (isalnum(current)) {
             while (i < vector->size && isalnum(current)) {
@@ -132,11 +214,11 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             }
             else if (strcmp(buffer->data, "true") == 0) {
                 resetCharVector(buffer);
-                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LITERAL, .b = true });
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BOOL_LITERAL, .b = true });
             }
             else if (strcmp(buffer->data, "false") == 0) {
                 resetCharVector(buffer);
-                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_FALSE, .b = false });
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BOOL_LITERAL, .b = false });
             }
             else if (strcmp(buffer->data, "for") == 0) {
                 resetCharVector(buffer);

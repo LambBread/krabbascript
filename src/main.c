@@ -38,11 +38,11 @@ int main(int argc, char *argv[]) {
         }
     
         int result = isFile(argv[2]);
-        if (result == 1) {
+        if (result == KSCRIPT_FILE) {
             char_vector_t *source = fileToCharVector(argv[2]);
 
             token_vector_t *tokens = tokenize(source, argv[2]);
-            (void)tokens;
+            deTokenize(tokens);
 
             if (errors_generated > 0) {
                 printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        else if (result == 0) {
+        else if (result == DIRECTORY) {
             printf("\e[1;31mERROR\e[0m: Building a directory is not implemented yet\n");
         }
         else {

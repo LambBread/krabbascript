@@ -5,9 +5,12 @@
 #include <dirent.h>
 #include <errno.h>
 
+#define DIRECTORY       0
+#define KSCRIPT_FILE    1
+
 #define KSCRIPT_VERSION_MAJOR 1
 #define KSCRIPT_VERSION_MINOR 2
-#define KSCRIPT_VERSION_PATCH 2
+#define KSCRIPT_VERSION_PATCH 3
 
 #define KSCRIPT_VERSION_IDENT "prototype"
 
