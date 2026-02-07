@@ -21,6 +21,5 @@ To build Krabbascript, you got to use GNU Make or a compatible tool.
 Krabbascript is written in C, and requires a C compiler do build. I genuinely recommend that you use gcc to build the compiler, because its set as default in the Makefile. If you cant use gcc for some reason, you can edit CC variable to the compiler you want in the Makefile.
 
 ### Building Krabbascript
-```make```
-```sudo make install```
+```make && sudo make install```
 This creates the final binary in the project's directory and copies the compiler to /usr/bin/kscript.
