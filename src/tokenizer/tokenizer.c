@@ -94,8 +94,94 @@ void deTokenizeToken(token_t token) {
         case KSCRIPT_TOKEN_TYPE_MUL_EQ:             printf("*= "); break;
         case KSCRIPT_TOKEN_TYPE_DIV_EQ:             printf("/= "); break;
 
+        case KSCRIPT_TOKEN_TYPE_PLUS_PLUS:          printf("++ "); break;
+        case KSCRIPT_TOKEN_TYPE_MINUS_MINUS:        printf("-- "); break;
+
+        case KSCRIPT_TOKEN_TYPE_EOF:                printf("EOF "); break;
+
         default:
             printf("Unknown token: %d", token.type);
+            break;
+    }
+    printf("\n");
+}
+
+void deTokenizeTokenKeyword(token_t token) {
+    switch (token.type) {
+        case KSCRIPT_TOKEN_TYPE_I64:     printf("i64"); break;
+        case KSCRIPT_TOKEN_TYPE_I32:     printf("i32"); break;
+        case KSCRIPT_TOKEN_TYPE_I16:     printf("i16"); break;
+        case KSCRIPT_TOKEN_TYPE_I8:      printf("i8"); break;
+        case KSCRIPT_TOKEN_TYPE_U64:     printf("u64"); break;
+        case KSCRIPT_TOKEN_TYPE_U32:     printf("u32"); break;
+        case KSCRIPT_TOKEN_TYPE_U16:     printf("u16"); break;
+        case KSCRIPT_TOKEN_TYPE_U8:      printf("u8"); break;
+        case KSCRIPT_TOKEN_TYPE_F64:     printf("f64"); break;
+        case KSCRIPT_TOKEN_TYPE_F32:     printf("f32"); break;
+        case KSCRIPT_TOKEN_TYPE_PTR:     printf("ptr"); break;
+        case KSCRIPT_TOKEN_TYPE_STR:     printf("str"); break;
+        case KSCRIPT_TOKEN_TYPE_BOOL:    printf("bool"); break;
+
+        case KSCRIPT_TOKEN_TYPE_LITERAL: 
+            printf("%s", token.s); break;
+        case KSCRIPT_TOKEN_TYPE_INT_LITERAL: 
+            printf("%d", token.i); break;
+        case KSCRIPT_TOKEN_TYPE_STR_LITERAL: 
+            printf("\"%s\"", token.s); break;
+        case KSCRIPT_TOKEN_TYPE_BOOL_LITERAL:
+            printf("%s", token.b == true ? "true" : "false"); break;
+
+        case KSCRIPT_TOKEN_TYPE_FUNCTION: printf("function"); break;
+        case KSCRIPT_TOKEN_TYPE_VAR:      printf("var"); break;
+        case KSCRIPT_TOKEN_TYPE_VAL:      printf("val"); break;
+        case KSCRIPT_TOKEN_TYPE_IMPORT:   printf("import"); break;
+        case KSCRIPT_TOKEN_TYPE_FROM:     printf("from"); break;
+        case KSCRIPT_TOKEN_TYPE_MODULE:   printf("module"); break;
+        case KSCRIPT_TOKEN_TYPE_WHILE:    printf("while"); break;
+        case KSCRIPT_TOKEN_TYPE_TRUE:     printf("true"); break;
+        case KSCRIPT_TOKEN_TYPE_FALSE:    printf("false"); break;
+        case KSCRIPT_TOKEN_TYPE_FOR:      printf("for"); break;
+
+        case KSCRIPT_TOKEN_TYPE_OPEN_PAREN:         printf("("); break;
+        case KSCRIPT_TOKEN_TYPE_CLOSED_PAREN:       printf(")"); break;
+        case KSCRIPT_TOKEN_TYPE_SEMICOLON:          printf(";"); break;
+        case KSCRIPT_TOKEN_TYPE_EQUALS:             printf("="); break;
+        case KSCRIPT_TOKEN_TYPE_EXMARK:             printf("!"); break;
+        case KSCRIPT_TOKEN_TYPE_QMARK:              printf("?"); break;
+        case KSCRIPT_TOKEN_TYPE_DOT:                printf("."); break;
+        case KSCRIPT_TOKEN_TYPE_COMMA:              printf(","); break;
+        case KSCRIPT_TOKEN_TYPE_CBRACKET_OPEN:      printf("{"); break;
+        case KSCRIPT_TOKEN_TYPE_CBRACKET_CLOSED:    printf("}"); break;
+        case KSCRIPT_TOKEN_TYPE_LESS_THAN:          printf("<"); break;
+        case KSCRIPT_TOKEN_TYPE_MORE_THAN:          printf(">"); break;
+        case KSCRIPT_TOKEN_TYPE_STAR:               printf("*"); break;
+        case KSCRIPT_TOKEN_TYPE_MINUS:              printf("-"); break;
+        case KSCRIPT_TOKEN_TYPE_COLON:              printf(":"); break;
+        case KSCRIPT_TOKEN_TYPE_SBRACKET_OPEN:      printf("["); break;
+        case KSCRIPT_TOKEN_TYPE_SBRACKET_CLOSED:    printf("]"); break;
+        case KSCRIPT_TOKEN_TYPE_SLASH:              printf("/"); break;
+        case KSCRIPT_TOKEN_TYPE_BSLASH:             printf("\\"); break;
+        case KSCRIPT_TOKEN_TYPE_IF:                 printf("if"); break;
+        case KSCRIPT_TOKEN_TYPE_ELIF:               printf("elif"); break;
+        case KSCRIPT_TOKEN_TYPE_ELSE:               printf("else"); break;
+        case KSCRIPT_TOKEN_TYPE_ARROW:              printf("->"); break;
+        case KSCRIPT_TOKEN_TYPE_EQUALS_EQUALS:      printf("=="); break;
+
+        case KSCRIPT_TOKEN_TYPE_ARRAY:              printf("array"); break;
+        case KSCRIPT_TOKEN_TYPE_PLUS:               printf("+"); break;
+
+        case KSCRIPT_TOKEN_TYPE_PLUS_EQ:            printf("+="); break;
+        case KSCRIPT_TOKEN_TYPE_MINUS_EQ:           printf("-="); break;
+        case KSCRIPT_TOKEN_TYPE_MUL_EQ:             printf("*="); break;
+        case KSCRIPT_TOKEN_TYPE_DIV_EQ:             printf("/="); break;
+
+        case KSCRIPT_TOKEN_TYPE_PLUS_PLUS:          printf("++"); break;
+        case KSCRIPT_TOKEN_TYPE_MINUS_MINUS:        printf("--"); break;
+
+        case KSCRIPT_TOKEN_TYPE_EOF:                printf("EOF"); break;
+
+        default:
+            printf("??");
             break;
     }
     printf("\n");
@@ -129,7 +215,6 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 errors_generated++;
 
                 printf("%s:%d:%d: \e[1;31mOVERFLOW ERROR\e[0m: Number is too large\n", debug_path, line, col);
-                printErrorsGenerated();
             }
             resetCharVector(buffer);
 
@@ -240,8 +325,15 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 i++;
                 col += 2;
             }
+            // Handle -=
             else if (i + 1 < vector->size && vector->data[i + 1] == '=') {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MINUS_EQ });
+                i++;
+                col += 2;
+            }
+            // Handle --
+            else if (i + 1 < vector->size && vector->data[i + 1] == '-') {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MINUS_MINUS });
                 i++;
                 col += 2;
             }
@@ -263,6 +355,7 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             col++;
         }
         else if (current == '/') {
+            // Handle /=
             if (i + 1 < vector->size && vector->data[i + 1] == '=') {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_DIV_EQ });
                 i++;
@@ -292,8 +385,16 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             }
         }
         else if (current == '+') {
+            // Handle +=
             if (i + 1 < vector->size && vector->data[i + 1] == '=') {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_PLUS_EQ });
+
+                i++;
+                col += 2;
+            }
+            // Handle ++
+            if (i + 1 < vector->size && vector->data[i + 1] == '+') {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_PLUS_PLUS });
 
                 i++;
                 col += 2;
@@ -438,9 +539,9 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             errors_generated++;
 
             printf("%s:%d:%d: \e[1;31mLEXICAL ERROR\e[0m: Unexpected character '%c'\n", debug_path, line, col, current);
-            printErrorsGenerated();
         }
     }
+    tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_EOF });
 
     return tokens;
 }

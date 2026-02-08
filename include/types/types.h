@@ -84,7 +84,10 @@ typedef enum {
     KSCRIPT_TOKEN_TYPE_PLUS_EQ,
     KSCRIPT_TOKEN_TYPE_MINUS_EQ,
     KSCRIPT_TOKEN_TYPE_MUL_EQ,
-    KSCRIPT_TOKEN_TYPE_DIV_EQ
+    KSCRIPT_TOKEN_TYPE_DIV_EQ,
+
+    KSCRIPT_TOKEN_TYPE_PLUS_PLUS,
+    KSCRIPT_TOKEN_TYPE_MINUS_MINUS,
 
 
 } token_type;
@@ -139,24 +142,38 @@ typedef enum {
     KSCRIPT_AST_NODE_TYPE_VALUE_DEC,
 
     KSCRIPT_AST_NODE_TYPE_FUNCTION_DEC,
-    KSCRIPT_AST_NODE_TYPE_FUNCTION_DEF
+    KSCRIPT_AST_NODE_TYPE_FUNCTION_DEF,
+
+    KSCRIPT_AST_NODE_TYPE_LITERAL,
+    KSCRIPT_AST_NODE_TYPE_BOOL_LITERAL,
+    KSCRIPT_AST_NODE_TYPE_STR_LITERAL,
+    KSCRIPT_AST_NODE_TYPE_INT_LITERAL,
+
+    KSCRIPT_AST_NODE_TYPE_NONE
 } ast_node_type;
 
 typedef struct ast_node_t {
     ast_node_type           type;
 
-    struct ast_node_t       **children;
-    size_t                  children_nodes_count;
-    size_t                  children_nodes_capacity;
+    struct ast_node_t       **left;
+    size_t                  left_nodes_size;
+    size_t                  left_nodes_capacity;
 
-    struct ast_node_t       **brothers;
-    size_t                  brothers_nodes_count;
-    size_t                  brothers_nodes_capacity;
+    struct ast_node_t       **right;
+    size_t                  right_nodes_size;
+    size_t                  right_nodes_capacity;
 
     union {
         int                 i;
         char                *s;
+        bool                b;
     };
 } ast_node_t;
 
 typedef ast_node_t ast_parent_t;
+
+typedef struct {
+    float       left;
+    float       right;
+
+} binding_power_t;

@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <tokenizer/tokenizer.h>
 
+#include <parser/parser.h>
+
 int main(int argc, char *argv[]) {
     (void)argv;
 
@@ -38,10 +40,14 @@ int main(int argc, char *argv[]) {
     
         int result = isFile(argv[2]);
         if (result == KSCRIPT_FILE) {
-            char_vector_t *source = fileToCharVector(argv[2]);
+            //char_vector_t *source = fileToCharVector(argv[2]);
+            char_vector_t *source = charVectorFromString("1 + a / g * 5");
 
             token_vector_t *tokens = tokenize(source, argv[2]);
             deTokenize(tokens);
+
+            size_t index = 0;
+            astParseExpression(tokens, &index, 0.0f);
 
             printErrorsGenerated();
         }
