@@ -40,8 +40,7 @@ int main(int argc, char *argv[]) {
     
         int result = isFile(argv[2]);
         if (result == KSCRIPT_FILE) {
-            //char_vector_t *source = fileToCharVector(argv[2]);
-            char_vector_t *source = charVectorFromString("1 + a / g * 5");
+            char_vector_t *source = fileToCharVector(argv[2]);
 
             token_vector_t *tokens = tokenize(source, argv[2]);
             deTokenize(tokens);

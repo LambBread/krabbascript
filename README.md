@@ -1,4 +1,4 @@
-# Krabbascript 1.3.3-prototype
+# Krabbascript 2.3.3-prototype
 Krabbascript is a statically typed, AOT compiled, high level programming language designed to be easy to write and read.
 
 > [!CAUTION]
