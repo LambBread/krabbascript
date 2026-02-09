@@ -89,6 +89,16 @@ typedef enum {
     KSCRIPT_TOKEN_TYPE_PLUS_PLUS,
     KSCRIPT_TOKEN_TYPE_MINUS_MINUS,
 
+    KSCRIPT_TOKEN_TYPE_LOGICAL_OR,
+    KSCRIPT_TOKEN_TYPE_LOGICAL_AND,
+
+    KSCRIPT_TOKEN_TYPE_BWISE_AND,
+    KSCRIPT_TOKEN_TYPE_BWISE_OR,
+
+    KSCRIPT_TOKEN_TYPE_BWISE_XOR,
+
+    KSCRIPT_TOKEN_TYPE_POWER_OF
+
 
 } token_type;
 
@@ -129,9 +139,9 @@ typedef enum {
     KSCRIPT_AST_NODE_TYPE_MINUS,
 
     // Logical & bitwise operators
-    KSCRIPT_AST_NODE_TYPE_AND,
-    KSCRIPT_AST_NODE_TYPE_OR,
-    KSCRIPT_AST_NODE_TYPE_NOT,
+    KSCRIPT_AST_NODE_TYPE_LOGICAL_AND,
+    KSCRIPT_AST_NODE_TYPE_LOGICAL_OR,
+    KSCRIPT_AST_NODE_TYPE_LOGICAL_NOT,
 
     KSCRIPT_AST_NODE_TYPE_BWISE_AND,
     KSCRIPT_AST_NODE_TYPE_BWISE_OR,
@@ -155,19 +165,12 @@ typedef enum {
 typedef struct ast_node_t {
     ast_node_type           type;
 
-    struct ast_node_t       **left;
-    size_t                  left_nodes_size;
-    size_t                  left_nodes_capacity;
+    struct ast_node_t       *left;
+    struct ast_node_t       *right;
 
-    struct ast_node_t       **right;
-    size_t                  right_nodes_size;
-    size_t                  right_nodes_capacity;
-
-    union {
-        int                 i;
-        char                *s;
-        bool                b;
-    };
+    char                    *lexeme;
+    int                     line;
+    int                     col;
 } ast_node_t;
 
 typedef ast_node_t ast_parent_t;

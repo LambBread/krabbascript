@@ -99,6 +99,15 @@ void deTokenizeToken(token_t token) {
 
         case KSCRIPT_TOKEN_TYPE_EOF:                printf("EOF "); break;
 
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_AND:        printf("&& "); break;
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_OR:         printf("|| "); break;
+
+        case KSCRIPT_TOKEN_TYPE_BWISE_XOR:          printf("^ "); break;
+        case KSCRIPT_TOKEN_TYPE_BWISE_AND:          printf("& "); break;
+
+        case KSCRIPT_TOKEN_TYPE_BWISE_OR:           printf("| "); break;
+        case KSCRIPT_TOKEN_TYPE_POWER_OF:           printf("** "); break;
+
         default:
             printf("Unknown token: %d", token.type);
             break;
@@ -179,6 +188,15 @@ void deTokenizeTokenKeyword(token_t token) {
         case KSCRIPT_TOKEN_TYPE_MINUS_MINUS:        printf("--"); break;
 
         case KSCRIPT_TOKEN_TYPE_EOF:                printf("EOF"); break;
+
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_AND:        printf("&&"); break;
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_OR:         printf("||"); break;
+
+        case KSCRIPT_TOKEN_TYPE_BWISE_XOR:          printf("^"); break;
+        case KSCRIPT_TOKEN_TYPE_BWISE_AND:          printf("&"); break;
+
+        case KSCRIPT_TOKEN_TYPE_BWISE_OR:           printf("|"); break;
+        case KSCRIPT_TOKEN_TYPE_POWER_OF:           printf("**"); break;
 
         default:
             printf("??");
@@ -313,6 +331,12 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
                 i++;
                 col += 2;
             }
+            if (i + 1 < vector->size && vector->data[i + 1] == '*') {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_POWER_OF });
+
+                i++;
+                col += 2;
+            }
             else {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_STAR });
                 col++;
@@ -339,6 +363,32 @@ token_vector_t *tokenize(char_vector_t *vector, const char *debug_path) {
             }
             else {
                 tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_MINUS });
+                col++;
+            }
+        }
+        else if (current == '^') {
+            tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BWISE_XOR });
+            col++;
+        }
+        else if (current == '|') {
+            if (i + 1 < vector->size && vector->data[i + 1] == '|') {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LOGICAL_OR });
+                i++;
+                col += 2;
+            }
+            else {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BWISE_OR });
+                col++;
+            }
+        }
+        else if (current == '&') {
+            if (i + 1 < vector->size && vector->data[i + 1] == '&') {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_LOGICAL_AND });
+                i++;
+                col += 2;
+            }
+            else {
+                tokenVectorPush(tokens, (token_t){ .type = KSCRIPT_TOKEN_TYPE_BWISE_AND });
                 col++;
             }
         }

@@ -27,7 +27,7 @@ ast_node_t *tokenToNode(token_t token) {
     switch (token.type) {
         case KSCRIPT_TOKEN_TYPE_LITERAL:
             node->type   = KSCRIPT_AST_NODE_TYPE_LITERAL;
-            node->s      = strdup(token.s);
+            node->lexeme = token.s;
 
             break;
         case KSCRIPT_TOKEN_TYPE_BOOL_LITERAL:
@@ -59,6 +59,21 @@ ast_node_t *tokenToNode(token_t token) {
             break;
         case KSCRIPT_TOKEN_TYPE_SLASH:
             node->type   = KSCRIPT_AST_NODE_TYPE_DIV;
+            break;
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_AND:
+            node->type   = KSCRIPT_AST_NODE_TYPE_LOGICAL_AND;
+            break;
+        case KSCRIPT_TOKEN_TYPE_LOGICAL_OR:
+            node->type   = KSCRIPT_AST_NODE_TYPE_LOGICAL_OR;
+            break;
+        case KSCRIPT_TOKEN_TYPE_BWISE_AND:
+            node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_AND;
+            break;
+        case KSCRIPT_TOKEN_TYPE_BWISE_OR:
+            node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_OR;
+            break;
+        case KSCRIPT_TOKEN_TYPE_BWISE_XOR:
+            node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_XOR;
             break;
         default:
             errors_generated++;
