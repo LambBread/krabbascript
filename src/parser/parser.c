@@ -32,48 +32,57 @@ ast_node_t *tokenToNode(token_t token) {
             break;
         case KSCRIPT_TOKEN_TYPE_BOOL_LITERAL:
             node->type   = KSCRIPT_AST_NODE_TYPE_BOOL_LITERAL;
-            node->b      = token.b;
+            node->lexeme = token.b == true ? "true" : "false";
 
             break;
         case KSCRIPT_TOKEN_TYPE_STR_LITERAL:
             node->type   = KSCRIPT_AST_NODE_TYPE_STR_LITERAL;
-            node->s      = strdup(token.s);
+            node->lexeme = strdup(token.s);
 
             break;
         case KSCRIPT_TOKEN_TYPE_INT_LITERAL:
             node->type   = KSCRIPT_AST_NODE_TYPE_INT_LITERAL;
-            node->i      = token.i;
+            sprintf(node->lexeme, "%d", token.i);
 
             break;
         case KSCRIPT_TOKEN_TYPE_EOF:
-            node->type   = KSCRIPT_AST_NODE_TYPE_NONE;
+            node->type   = KSCRIPT_AST_NODE_TYPE_EOF;
             break;
         case KSCRIPT_TOKEN_TYPE_PLUS:
             node->type   = KSCRIPT_AST_NODE_TYPE_PLUS;
+            node->lexeme = "+";
             break;
         case KSCRIPT_TOKEN_TYPE_MINUS:
             node->type   = KSCRIPT_AST_NODE_TYPE_MINUS;
+            node->lexeme = "-";
             break;
         case KSCRIPT_TOKEN_TYPE_STAR:
             node->type   = KSCRIPT_AST_NODE_TYPE_MUL;
+            node->lexeme = "*";
             break;
         case KSCRIPT_TOKEN_TYPE_SLASH:
             node->type   = KSCRIPT_AST_NODE_TYPE_DIV;
+            node->lexeme = "/";
             break;
         case KSCRIPT_TOKEN_TYPE_LOGICAL_AND:
             node->type   = KSCRIPT_AST_NODE_TYPE_LOGICAL_AND;
+            node->lexeme = "&&";
             break;
         case KSCRIPT_TOKEN_TYPE_LOGICAL_OR:
             node->type   = KSCRIPT_AST_NODE_TYPE_LOGICAL_OR;
+            node->lexeme = "||";
             break;
         case KSCRIPT_TOKEN_TYPE_BWISE_AND:
             node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_AND;
+            node->lexeme = "&";
             break;
         case KSCRIPT_TOKEN_TYPE_BWISE_OR:
             node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_OR;
+            node->lexeme = "|";
             break;
         case KSCRIPT_TOKEN_TYPE_BWISE_XOR:
             node->type   = KSCRIPT_AST_NODE_TYPE_BWISE_XOR;
+            node->lexeme = "^"
             break;
         default:
             errors_generated++;
@@ -105,8 +114,8 @@ ast_parent_t *astParseExpression(token_vector_t *tokens, size_t *index, float mi
 
         ast_node_t *rhs = astParseExpression(tokens, index, bp.right);
 
-        nodePushLeft(op_node, lhs);
-        nodePushRight(op_node, rhs);
+        op_node->left   = lhs;
+        op_node->right  = rhs;
 
         lhs = op_node;
     }

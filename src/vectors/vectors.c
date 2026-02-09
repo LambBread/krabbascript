@@ -110,70 +110,7 @@ ast_node_t *newNode() {
      ast_node_t *node = (ast_node_t *)malloc(sizeof(ast_node_t));
 
      node->left                    = NULL;
-     node->left_nodes_capacity     = 0;
-     node->left_nodes_size         = 0;
-
      node->right                   = NULL;
-     node->right_nodes_capacity    = 0;
-     node->right_nodes_size        = 0;
 
      return node;
-}
-
-void nodePushLeft(ast_node_t *node, ast_node_t *val) {
-     if (node->left == NULL) {
-          node->left = (ast_node_t **)malloc(sizeof(ast_node_t *));
-
-          node->left_nodes_capacity = 1;
-     }
-     else if (node->left_nodes_size >= node->left_nodes_capacity) {
-          node->left_nodes_capacity *= 2;
-          node->left = (ast_node_t **)realloc(node->left, sizeof(ast_node_t *) * node->left_nodes_capacity);
-     }
-
-     node->left[node->left_nodes_size] = val;
-     node->left_nodes_size++;
-}
-
-void nodePushRight(ast_node_t *node, ast_node_t *val) {
-     if (node->right == NULL) {
-          node->right = (ast_node_t **)malloc(sizeof(ast_node_t *));
-
-          node->right_nodes_capacity = 1;
-     }
-     else if (node->right_nodes_size >= node->right_nodes_capacity) {
-          node->right_nodes_capacity *= 2;
-          node->right = (ast_node_t **)realloc(node->right, sizeof(ast_node_t *) * node->right_nodes_capacity);
-     }
-
-     node->right[node->right_nodes_size] = val;
-     node->right_nodes_size++;
-}
-
-ast_node_t *nodePopLeft(ast_node_t *node) {
-     if (node->left_nodes_size > 0) {
-          ast_node_t *n = node->left[node->left_nodes_size - 1];
-
-          node->left_nodes_size--;
-          return n;
-     }
-
-     ast_node_t *empty = (ast_node_t *)malloc(sizeof(ast_node_t));
-     empty->type = KSCRIPT_AST_NODE_TYPE_NONE;
-
-     return empty;
-}
-
-ast_node_t *nodePopRight(ast_node_t *node) {
-     if (node->right_nodes_size > 0) {
-          ast_node_t *n = node->right[node->right_nodes_size - 1];
-
-          node->right_nodes_size--;
-          return n;
-     }
-
-     ast_node_t *empty = (ast_node_t *)malloc(sizeof(ast_node_t));
-     empty->type = KSCRIPT_AST_NODE_TYPE_NONE;
-
-     return empty;
 }

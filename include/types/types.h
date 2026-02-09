@@ -159,7 +159,8 @@ typedef enum {
     KSCRIPT_AST_NODE_TYPE_STR_LITERAL,
     KSCRIPT_AST_NODE_TYPE_INT_LITERAL,
 
-    KSCRIPT_AST_NODE_TYPE_NONE
+    KSCRIPT_AST_NODE_TYPE_NONE,
+    KSCRIPT_AST_NODE_TYPE_EOF
 } ast_node_type;
 
 typedef struct ast_node_t {
