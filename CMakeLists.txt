@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(krabbascript VERSION 2.2.3 LANGUAGES C)
+project(krabbascript VERSION 2.3.3 LANGUAGES C)
 
 option(KRS_FORMAT "Run clang-format on source files" OFF)
 
