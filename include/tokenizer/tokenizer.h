@@ -9,11 +9,11 @@
 #include <string.h>
 #include <common/common.h>
 
-char_vector_t       *fileToCharVector(const char *path);
+char_vector_t* fileToCharVector(const char* path);
 
-void                deTokenize(token_vector_t *vector);
-void                deTokenizeToken(token_t token);
+void deTokenize(token_vector_t* vector);
+void deTokenizeToken(token_t token);
 
-void                deTokenizeTokenKeyword(token_t token);
+void deTokenizeTokenKeyword(token_t token);
 
-token_vector_t      *tokenize(char_vector_t *vector, const char *debug_path);
+token_vector_t* tokenize(char_vector_t* vector, const char* debug_path);

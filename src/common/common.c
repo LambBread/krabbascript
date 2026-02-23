@@ -2,7 +2,8 @@
 
 int errors_generated = 0;
 
-void printUsage() {
+void printUsage()
+{
     printf("Usage: kscript [options]\n\n");
     printf("Commands: \n");
 
@@ -11,18 +12,22 @@ void printUsage() {
     printf("    version             Display the current compiler version\n");
 }
 
-void usageInit() {
+void usageInit()
+{
     printf("Usage: kscript init <name>\n");
 }
 
-void usageBuild() {
+void usageBuild()
+{
     printf("Usage: kscript build <file|dir>\n");
 }
 
-int isFile(const char* name) {
+int isFile(const char* name)
+{
     DIR* directory = opendir(name);
 
-    if (directory != NULL) {
+    if (directory != NULL)
+    {
         closedir(directory);
         return 0;
     }
@@ -30,11 +35,11 @@ int isFile(const char* name) {
     if (errno == ENOTDIR)
         return 1;
 
-
     return -1;
 }
 
-void printKrabba() {
+void printKrabba()
+{
     printf("              ▓▓▓▓▓▓▓▓▓▓▓▓                    \n"
            "  ▓▓▓▓      ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓                  \n"
            "  ▓▓      ▓▓▓▓    ▓▓██    ██                  \n"
@@ -59,10 +64,13 @@ void printKrabba() {
     // Krabba!!!!
 }
 
-void printErrorsGenerated() {
-    if (errors_generated > 0) {
-        printf("\e[1;31m==== BUILD FAILED with %d %s ====\e[0m\n", errors_generated, 
-            errors_generated == 1 ? "error" : "errors");
+void printErrorsGenerated()
+{
+    if (errors_generated > 0)
+    {
+        printf("\033[1;31m==== BUILD FAILED with %d %s ====\033[0m\n",
+               errors_generated,
+               errors_generated == 1 ? "error" : "errors");
 
         exit(1);
     }

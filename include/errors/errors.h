@@ -1,5 +1,5 @@
 #pragma once
 
-void printError() {
-    
+void printError()
+{
 }

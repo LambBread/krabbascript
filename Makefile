@@ -20,10 +20,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@echo "Cleaning up..."
-	@rm -rf $(OBJ_DIR) $(TARGET)
+	@rm -rf $(OBJ_DIR) $(TARGET) build
 
 install:
 	@echo "Installing..."
-	@cp kscript /usr/bin/kscript
+	@cp kscript /usr/local/bin/kscript
 
 .PHONY: all clean

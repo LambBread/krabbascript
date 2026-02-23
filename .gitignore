@@ -4,4 +4,12 @@ kscript.*
 test.krs
 
 obj/
+
+build/
+bin/
+
+*.swp
+*~
+Thumbs.db
+
 .vscode/

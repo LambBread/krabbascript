@@ -3,7 +3,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef enum {
+typedef enum
+{
     // Types
     KSCRIPT_TOKEN_TYPE_I64,
     KSCRIPT_TOKEN_TYPE_I32,
@@ -99,39 +100,43 @@ typedef enum {
 
     KSCRIPT_TOKEN_TYPE_POWER_OF
 
-
 } token_type;
 
-typedef struct {
-    token_type      type;
+typedef struct
+{
+    token_type type;
 
-    union {
-        int             i;
-        float           f;
-        double          d;
+    union
+    {
+        int    i;
+        float  f;
+        double d;
 
-        char            *s;
-        bool            b;
+        char* s;
+        bool  b;
     };
 } token_t;
 
-typedef struct {
-     char     *data;
+typedef struct
+{
+    char* data;
 
-     size_t   size;
-     size_t   capacity;
+    size_t size;
+    size_t capacity;
 
 } char_vector_t;
 
-typedef struct {
-     token_t    *data;
+typedef struct
+{
+    token_t* data;
 
-     size_t   size;
-     size_t   capacity;
+    size_t size;
+    size_t capacity;
 
 } token_vector_t;
 
-typedef enum {
+typedef enum
+{
     // Arithmetic operators
     KSCRIPT_AST_NODE_TYPE_DIV,
     KSCRIPT_AST_NODE_TYPE_MUL,
@@ -163,21 +168,23 @@ typedef enum {
     KSCRIPT_AST_NODE_TYPE_EOF
 } ast_node_type;
 
-typedef struct ast_node_t {
-    ast_node_type           type;
+typedef struct ast_node_t
+{
+    ast_node_type type;
 
-    struct ast_node_t       *left;
-    struct ast_node_t       *right;
+    struct ast_node_t* left;
+    struct ast_node_t* right;
 
-    char                    *lexeme;
-    int                     line;
-    int                     col;
+    char* lexeme;
+    int   line;
+    int   col;
 } ast_node_t;
 
 typedef ast_node_t ast_parent_t;
 
-typedef struct {
-    float       left;
-    float       right;
+typedef struct
+{
+    float left;
+    float right;
 
 } binding_power_t;
